@@ -4,6 +4,7 @@ import { BsArrowUpRight } from "react-icons/bs";
 import { BiUserCircle } from "react-icons/bi";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { AppName, NavItems } from "../data.js";
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [nav, setNav] = useState(false);
@@ -22,12 +23,14 @@ function Navbar() {
         <li className="whitespace-nowrap mx-4 py-1 link">{NavItems[2]}</li>
       </ul>
       <div className="hidden md:flex group">
+        <Link to="/register">
         <button className="ml-1 flex justify-between items-center whitespace-nowrap bg-light-secondary transition-all  text-light-primary group-hover:text-light-secondary group-hover:bg-light-primary p-3 rounded-full ease-in-out duration-300 border-transparent border-2 group-hover:border-light-secondary box-border">
           <p className="pr-2">Get Started</p>
           <div className="rounded-full bg-light-primary text-light-secondary group-hover:bg-light-secondary group-hover:text-light-primary p-1 transition-all duration-300">
             <BsArrowUpRight className="transform group-hover:rotate-45 transition-transform duration-500" />
           </div>
         </button>
+        </Link>
       </div>
       <div
         onClick={handleNav}
