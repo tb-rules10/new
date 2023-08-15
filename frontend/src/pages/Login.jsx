@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input, Button, Typography } from "@material-tailwind/react";
 import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { loginRoute } from '../utils/APIRoutes';
 
@@ -14,8 +15,11 @@ function Login() {
     autoClose: 3000,
     pauseOnHover: true,
     draggable: true,
-    theme: "light",
-    // theme: "dark",
+    // theme: "light",
+    theme: "dark",
+  };
+  const showError = (message) => {
+    toast.error(message, toastOptions);
   };
 
   const [values, setValues] = useState({
@@ -24,8 +28,6 @@ function Login() {
   });
 
   const handleChange = (event) => {
-    console.log(event.target);
-    console.log(values);
     setValues({...values, [event.target.name]: event.target.value});
   };
 
@@ -37,7 +39,6 @@ function Login() {
         email, password,
       });
       if(data.status === false){
-        // alert(data.message);
         toast.error(data.message, toastOptions);
       }
       if (data.status === true) {
@@ -49,20 +50,17 @@ function Login() {
 
   const handleValidation = () => {
     const {email, password} = values;
-    if (email.length <= 3) {
-      toast.error(
-        "email should be greater than 3 characters.",
-        toastOptions
-      );
-      return false;
-    } else if (password.length < 8) {
-      toast.error(
-        "Password should be equal or greater than 8 characters.",
-        toastOptions
-      );
-      return false;
+    const isValidPassword = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    if (email.length < 4) {
+    showError("Username or Email should have at least 4 characters.");
+    } else if (password.length < 6) {
+      showError("Password should have at least 6 characters.");
+    // } else if (!isValidPassword.test(password)) {
+    //   showError("Password should have at least 6 characters, including a letter and a digit.");
+    }else {
+      return true;
     }
-    return true;
+    return false;
   };
 
   return (
@@ -73,7 +71,7 @@ function Login() {
             Welcome back
           </h1>
           <form onSubmit={(event) => handleSubmit(event)} className="w-[70vw] md:w-[30vw] [&>*]:my-5 ">
-            <Input label="Email" name="email" onChange={(e) => handleChange(e)} />
+            <Input label="Username or Email" name="email" onChange={(e) => handleChange(e)} />
             <Input label="Password" name="password" type="password" onChange={(e) => handleChange(e)} />
             <Button variant="filled" fullWidth type="submit">
               Sign In
@@ -96,6 +94,7 @@ function Login() {
           />
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

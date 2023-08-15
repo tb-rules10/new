@@ -5,6 +5,7 @@ import { Input, Button, Typography } from "@material-tailwind/react";
 import {ToastContainer, toast} from 'react-toastify';
 import axios from 'axios';
 import { registerRoute } from '../utils/APIRoutes';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
 
@@ -16,6 +17,9 @@ function Register() {
     draggable: true,
     theme: "light",
     // theme: "dark",
+  };
+  const showError = (message) => {
+    toast.error(message, toastOptions);
   };
 
   const [values, setValues] = useState({
@@ -36,13 +40,12 @@ function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if(handleValidation()){
-      const {username, email, password} = values;
+      const {firstname, lastname, username, email, password} = values;
       const {data} = await axios.post(registerRoute, {
-        username, email, password,
+        firstname, lastname, username, email, password,
       });
       if(data.status === false){
-        // alert(data.message);
-        toast.error(data.message, toastOptions);
+        showError(data.message);
       }
       if (data.status === true) {
         localStorage.setItem(import.meta.env.VITE_LOCALHOST_KEY,JSON.stringify(data.user));
@@ -52,30 +55,30 @@ function Register() {
   };
 
   const handleValidation = () => {
-    const {username, email, password, confirmPassword} = values;
+    const { firstname, lastname, username, email, password, confirmPassword } = values;
+    const isValidPassword = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidUsername = /^[a-zA-Z0-9-]+$/;
     if (password !== confirmPassword) {
-      toast.error(
-        "Password and confirm password should be same.",
-        toastOptions
-      );
-      return false;
-    } else if (username.length <= 3) {
-      toast.error(
-        "Username should be greater than 3 characters.",
-        toastOptions
-      );
-      return false;
-    } else if (password.length < 8) {
-      toast.error(
-        "Password should be equal or greater than 8 characters.",
-        toastOptions
-      );
-      return false;
-    } else if (email === "") {
-      toast.error("Email is required.", toastOptions);
-      return false;
+      showError("Passwords do not match.");
+    } else if (username.length < 4) {
+      showError("Username should have at least 4 characters.");
+    } else if (!isValidUsername.test(username)) {
+      showError("Username should only contain letters and numbers.");
+    } else if (firstname.length < 4) {
+      showError("First name should have at least 4 characters.");
+    } else if (lastname.length < 4) {
+      showError("Last name should have at least 4 characters.");
+    // } else if (!isValidPassword.test(password)) {
+    //   showError("Password should have at least 6 characters, including a letter and a digit.");
+    }  else if (password.length < 6) {
+      showError("Password should have at least 6 characters.");
+    } else if (!isValidEmail.test(email)) {
+      showError("Please enter a valid email address.");
+    } else {
+      return true;
     }
-    return true;
+    return false; 
   };
 
   return (
@@ -106,14 +109,6 @@ function Register() {
                 Already have an account? <Link to="/login" className="font-bold underline hover:text-black">Sign In</Link>
               </Typography>
           </form>
-
-          {/* <div className="bg-white h-40 w-40"></div>
-          <div className="bg-white h-40 w-40"></div> */}
-          {/* <div className="w-[30vw] h-[80vh] m-auto bg-red-500">
-          {/*<h1 className="p-3 m-auto  text-3xl whitespace-nowrap font-bold text-light-secondary">
-            
-          </h1>
-          </div> */}
         </div>
         <div className="md:col-span-2 md:block hidden bg-gray-500 ">
           <img
@@ -126,6 +121,7 @@ function Register() {
           />
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

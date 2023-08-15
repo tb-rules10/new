@@ -19,9 +19,9 @@ export default withMT({
           // ... other light mode colors
         },
         dark: {
-          primary: '#1E2329',
+          primary: '#000300',
           secondary: '#DBDDE2',
-          backgroundColor: '#313338',
+          // backgroundColor: '#313338',
           hover: '#313338',
           // ... other dark mode colors
         },
