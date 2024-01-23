@@ -16,8 +16,6 @@ function Onboarding() {
       sequence={[
         'Explore, Code, Collaborate:',
         3000,
-        // 'Systummmmm',
-        // 3000, 
       ]}
       repeat={Infinity}
     />
